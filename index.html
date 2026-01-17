@@ -129,68 +129,44 @@ body {
 </div>
 
 <script>
-const CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTfwyjEDnf4Rps3kYqtrntUl8VMkWvur_Uz7iwRZAyfp8E-7DFLFGGnHHYwHQINdyEz7dqGCRNm9ue/pub?gid=0&single=true&output=csv";
+const SHEET_ID = "1RmG6MGxOm3p7WUZnBOQbFaG1ryntkCLa5llxzuBU3ik";
 
-let headers = [];
+const URL =
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
 let allData = [];
 
-fetch(CSV_URL)
+fetch(URL)
   .then(res => res.text())
-  .then(csv => {
-    const parsed = Papa.parse(csv, {
-      header: true,
-      skipEmptyLines: true
+  .then(text => {
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+
+    const headers = json.table.cols.map(c =>
+      c.label.trim().toLowerCase()
+    );
+
+    allData = json.table.rows.map(r => {
+      let obj = {};
+      r.c.forEach((cell, i) => {
+        obj[headers[i]] = cell ? cell.v : "";
+      });
+      return obj;
     });
 
-    allData = parsed.data;
-    headers = Object.keys(allData[0]);
-
-    renderFilters();
-    renderTable(allData);
+    console.log("DATA OK:", allData);
+    render(allData);
+    initFilters(allData);
+  })
+  .catch(err => {
+    document.getElementById("results").innerHTML =
+      "❌ Gagal load data spreadsheet";
+    console.error(err);
   });
-
-function renderFilters() {
-  const box = document.getElementById("filters");
-  box.innerHTML = headers.map(h =>
-    `<input
-      id="filter-${h}"
-      placeholder="Filter ${h}"
-      class="border p-2 rounded"
-      onkeyup="applyFilter()"
-    >`
-  ).join("");
-}
-
-function renderTable(data) {
-  document.getElementById("thead").innerHTML =
-    "<tr>" + headers.map(h => `<th class="border p-2">${h}</th>`).join("") + "</tr>";
-
-  document.getElementById("tbody").innerHTML =
-    data.map(row =>
-      "<tr class='hover:bg-gray-100'>" +
-      headers.map(h => `<td class="border p-2">${row[h] || ""}</td>`).join("") +
-      "</tr>"
-    ).join("");
-}
-
-function applyFilter() {
-  let filtered = allData;
-
-  headers.forEach(h => {
-    const val = document.getElementById(`filter-${h}`).value.toLowerCase();
-    if (val) {
-      filtered = filtered.filter(row =>
-        (row[h] || "").toLowerCase().includes(val)
-      );
-    }
-  });
-
-  renderTable(filtered);
-}
 </script>
+
 
 </body>
 </html>
+
 
 
