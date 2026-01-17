@@ -129,90 +129,30 @@ body {
 </div>
 
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/1RmG6MGxOm3p7WUZnBOQbFaG1ryntkCLa5llxzuBU3ik/edit?gid=0#gid=0";
+const SHEET_ID = "1RmG6MGxOm3p7WUZnBOQbFaG1ryntkCLa5llxzuBU3ik";
+const SHEET_NAME = "Sheet1";
+
+const API_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
 
 let allData = [];
 
-fetch(CSV_URL)
-  .then(r => r.text())
-  .then(csv => {
-    const rows = csv.split("\n").map(r => r.split(","));
-    const headers = rows.shift();
-
-    allData = rows.map(row => {
-      let obj = {};
-      headers.forEach((h, i) => {
-        obj[h.trim()] = row[i]?.trim();
-      });
-      return obj;
-    });
-
-    initFilters(allData);
-    render(allData);
+fetch(API_URL)
+  .then(res => res.json())
+  .then(data => {
+    allData = data;
+    initFilters(data);
+    render(data);
+  })
+  .catch(err => {
+    document.getElementById("results").innerHTML =
+      "❌ Gagal mengambil data spreadsheet";
+    console.error(err);
   });
-
-function initFilters(data) {
-  fillSelect("filterBulan", data.map(d => d.bulan));
-  fillSelect("filterKategori", data.map(d => d.kategori));
-}
-
-function fillSelect(id, values) {
-  const el = document.getElementById(id);
-  [...new Set(values.filter(Boolean))].forEach(v => {
-    const opt = document.createElement("option");
-    opt.value = v;
-    opt.textContent = v;
-    el.appendChild(opt);
-  });
-}
-
-document.querySelectorAll("input,select").forEach(el => {
-  el.addEventListener("input", applyFilter);
-});
-
-function applyFilter() {
-  const subjek = searchSubjek.value.toLowerCase();
-  const bulan = filterBulan.value;
-  const kategori = filterKategori.value;
-
-  const filtered = allData.filter(d =>
-    (!subjek || d.subjek?.toLowerCase().includes(subjek)) &&
-    (!bulan || d.bulan === bulan) &&
-    (!kategori || d.kategori === kategori)
-  );
-
-  render(filtered);
-}
-
-function render(data) {
-  const el = document.getElementById("results");
-  el.innerHTML = "";
-
-  if (!data.length) {
-    el.innerHTML = "<p>Tidak ada data ditemukan</p>";
-    return;
-  }
-
-  data.forEach(d => {
-    el.innerHTML += `
-      <div class="card">
-        <h3>${d.subjek || "-"}</h3>
-        <small>${d.bulan || "-"} | ${d.kategori || "-"}</small>
-        <p>${d.keterangan || ""}</p>
-      </div>
-    `;
-  });
-}
-
-function resetFilter() {
-  searchSubjek.value = "";
-  filterBulan.value = "";
-  filterKategori.value = "";
-  render(allData);
-}
 </script>
 
 </body>
 </html>
+
 
 
