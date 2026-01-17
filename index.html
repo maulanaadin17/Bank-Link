@@ -137,18 +137,32 @@ fetch("data.json")
     allData = data;
     initFilters(data);
     render(data);
-  })
-  .catch(err => {
-    document.getElementById("results").innerHTML =
-      "❌ Gagal load data offline";
-    console.error(err);
   });
+
+function initFilters(data) {
+  console.log("INIT FILTER", data);
+}
+
+function render(data) {
+  const el = document.getElementById("results");
+  el.innerHTML = "";
+
+  data.forEach(d => {
+    el.innerHTML += `
+      <div>
+        <b>${d.subjek}</b> - ${d.bulan}
+      </div>
+    `;
+  });
+}
 </script>
+
 
 
 
 </body>
 </html>
+
 
 
 
