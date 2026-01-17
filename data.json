@@ -1,14 +1,20 @@
 [
   {
-    "subjek": "bulan",
-    "gsheet": "desember"
+    "subjek": "gsheet",
+    "bulan": "desember"
+    "kategori": "normal"
+    "keterangan": "link"
   },
   {
-    "subjek": "kategori",
-    "gsheet": "normal"
+     "subjek": "PPT",
+    "bulan": "desember"
+    "kategori": "normal"
+    "keterangan": "link"
   },
   {
-    "subjek": "keterangan",
-    "gsheet": "link"
+     "subjek": "dasut",
+    "bulan": "desember"
+    "kategori": "normal"
+    "keterangan": "link"
   }
 ]
