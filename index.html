@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Spreadsheet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Visualization API -->
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body class="bg-gray-100 p-6">
+<div class="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow">
+  <h1 class="text-2xl font-bold mb-4">Data dari Google Spreadsheet</h1>
+
+  <div id="status" class="text-sm text-gray-500 mb-4">
+    Memuat data...
+  </div>
+
+  <div id="filters" class="grid grid-cols-3 gap-3 mb-4"></div>
+
+  <table class="w-full text-sm border">
+    <thead id="thead" class="bg-gray-200"></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<script>
+google.charts.load('current', {'packages':['table']});
+google.charts.setOnLoadCallback(loadData);
+
+const SHEET_ID = '1RmG6MGxOm3p7WUZnBOQbFaG1ryntkCLa5llxzuBU3ik';
+const SHEET_NAME = 'Sheet1';
+
+let allData = [];
+let headers = [];
+
+function loadData() {
+  const query = new google.visualization.Query(
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_NAME}`
+  );
+
+  query.send(response => {
+    if (response.isError()) {
+      document.getElementById("status").innerText =
+        "❌ Gagal mengambil data (Sheet belum Publish)";
+      return;
+    }
+
+    const data = response.getDataTable();
+    headers = [];
+    allData = [];
+
+    for (let c = 0; c < data.getNumberOfColumns(); c++) {
+      headers.push(data.getColumnLabel(c));
+    }
+
+    for (let r = 0; r < data.getNumberOfRows(); r++) {
+      let row = {};
+      headers.forEach((h, c) => {
+        row[h] = data.getValue(r, c) || "";
+      });
+      allData.push(row);
+    }
+
+    document.getElementById("status").innerText =
+      `✅ ${allData.length} baris dimuat`;
+
+    renderFilters();
+    renderTable(allData);
+  });
+}
+
+function renderFilters() {
+  document.getElementById("filters").innerHTML =
+    headers.map(h =>
+      `<input class="border p-2 rounded"
+        placeholder="Filter ${h}"
+        onkeyup="applyFilter('${h}', this.value)">`
+    ).join("");
+}
+
+function renderTable(data) {
+  document.getElementById("thead").innerHTML =
+    "<tr>" + headers.map(h => `<th class="border p-2">${h}</th>`).join("") + "</tr>";
+
+  document.getElementById("tbody").innerHTML =
+    data.map(row =>
+      "<tr>" +
+      headers.map(h => `<td class="border p-2">${row[h]}</td>`).join("") +
+      "</tr>"
+    ).join("");
+}
+
+function applyFilter(col, val) {
+  const filtered = allData.filter(r =>
+    (r[col] || "").toLowerCase().includes(val.toLowerCase())
+  );
+  renderTable(filtered);
+}
+</script>
+
+</body>
+</html>
