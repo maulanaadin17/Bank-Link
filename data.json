@@ -1,0 +1,14 @@
+[
+  {
+    "subjek": "bulan",
+    "gsheet": "desember"
+  },
+  {
+    "subjek": "kategori",
+    "gsheet": "normal"
+  },
+  {
+    "subjek": "keterangan",
+    "gsheet": "link"
+  }
+]
