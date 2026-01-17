@@ -129,7 +129,14 @@ body {
 </div>
 
 <script>
-const SHEET_ID = "1RmG6MGxOm3p7WUZnBOQbFaG1ryntkCLa5llxzuBU3ik";
+  fetch(API_URL)
+  .then(res => res.json())
+  .then(data => {
+    console.log("DATA:", data);
+    document.body.innerHTML =
+      "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+  });
+const SHEET_ID = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTfwyjEDnf4Rps3kYqtrntUl8VMkWvur_Uz7iwRZAyfp8E-7DFLFGGnHHYwHQINdyEz7dqGCRNm9ue/pubhtml?gid=0&single=true";
 const SHEET_NAME = "Sheet1";
 
 const API_URL =
@@ -153,6 +160,7 @@ fetch(API_URL)
 
 </body>
 </html>
+
 
 
 
