@@ -129,10 +129,8 @@ body {
 </div>
 
 <script>
-const SHEET_ID = "1RmG6MGxOm3p7WUZnBOQbFaG1ryntkCLa5llxzuBU3ik";
-
 const URL =
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTfwyjEDnf4Rps3kYqtrntUl8VMkWvur_Uz7iwRZAyfp8E-7DFLFGGnHHYwHQINdyEz7dqGCRNm9ue/gviz/tq?tqx=out:json";
 
 let allData = [];
 
@@ -153,13 +151,14 @@ fetch(URL)
       return obj;
     });
 
-    console.log("DATA OK:", allData);
-    render(allData);
+    console.log("DATA BERHASIL:", allData);
+
     initFilters(allData);
+    render(allData);
   })
   .catch(err => {
     document.getElementById("results").innerHTML =
-      "❌ Gagal load data spreadsheet";
+      "❌ Data gagal dimuat";
     console.error(err);
   });
 </script>
@@ -167,6 +166,7 @@ fetch(URL)
 
 </body>
 </html>
+
 
 
 
