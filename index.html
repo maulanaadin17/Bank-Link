@@ -129,43 +129,27 @@ body {
 </div>
 
 <script>
-const URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTfwyjEDnf4Rps3kYqtrntUl8VMkWvur_Uz7iwRZAyfp8E-7DFLFGGnHHYwHQINdyEz7dqGCRNm9ue/gviz/tq?tqx=out:json";
-
 let allData = [];
 
-fetch(URL)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substring(47).slice(0, -2));
-
-    const headers = json.table.cols.map(c =>
-      c.label.trim().toLowerCase()
-    );
-
-    allData = json.table.rows.map(r => {
-      let obj = {};
-      r.c.forEach((cell, i) => {
-        obj[headers[i]] = cell ? cell.v : "";
-      });
-      return obj;
-    });
-
-    console.log("DATA BERHASIL:", allData);
-
-    initFilters(allData);
-    render(allData);
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {
+    allData = data;
+    initFilters(data);
+    render(data);
   })
   .catch(err => {
     document.getElementById("results").innerHTML =
-      "❌ Data gagal dimuat";
+      "❌ Gagal load data offline";
     console.error(err);
   });
 </script>
 
 
+
 </body>
 </html>
+
 
 
 
