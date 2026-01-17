@@ -155,6 +155,13 @@ function render(data) {
     `;
   });
 }
+
+  const filtered = allData.filter(d =>
+  (!subjek || d.subjek.toLowerCase().includes(subjek)) &&
+  (!bulan || d.bulan === bulan) &&
+  (!kategori || d.kategori === kategori)
+);
+
 </script>
 
 
@@ -162,6 +169,7 @@ function render(data) {
 
 </body>
 </html>
+
 
 
 
